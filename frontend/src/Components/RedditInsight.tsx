@@ -12,10 +12,11 @@ const RedditInsight = () => {
   const [loading,setLoading] = useState<boolean>(false)
   const [error,setError] = useState<boolean>(false)
   const [disableSubmit,setDisableSubmit] = useState<boolean>(false)
+  const API_URL = import.meta.env.VITE_API_URL
 
   useEffect(() => {
     console.log("in useeffect")
-    let cleanup:(()=>void) | undefined;
+    
     if (id) {
       if (cache[id]) {
         setLoading(false)
@@ -25,12 +26,12 @@ const RedditInsight = () => {
         return;
       }
 
-      fetch("http://localhost:3000/" + id)
+      fetch(API_URL + id)
         .then((res) => res.json())
         .then((data) => {
           setLoading(false)
           
-          cleanup = typeWriter(data.summary);
+           typeWriter(data.summary);
           if(inp.current){
             inp.current.value=""
 
@@ -39,10 +40,9 @@ const RedditInsight = () => {
           setId("")
         });
     }
-    return () =>{
-      if (cleanup) cleanup()
-    }
+    
   }, [id]);
+
 
 
 
@@ -52,9 +52,8 @@ const RedditInsight = () => {
     return;
   }
   setSummary(text.slice(0, i + 1));
-  const timeoutId = setTimeout(() => typeWriter(text, i + 1), 50);
+   setTimeout(() => typeWriter(text, i + 1), 50);
 
-  return () => clearTimeout(timeoutId);
   }
 
   function summarize() {
