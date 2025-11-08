@@ -3,6 +3,12 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import getSummary from './utils/getSummary.js'
 
+interface Obj{
+    data:{
+        body:string
+    }
+}
+
 dotenv.config()
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -20,7 +26,7 @@ app.get("/:threadId",async (req,res) =>{
         // console.log(data[1].data.children)
         const title =data[0].data.children[0].data.title
         // console.log(title)
-        const comments = data[1].data.children.map((obj) => obj.data.body)
+        const comments = data[1].data.children.map((obj:Obj) => obj.data.body)
         // console.log(comments)
         const summary = await getSummary(title,comments)
         res.status(200).json({summary:summary})
