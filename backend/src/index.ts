@@ -21,7 +21,7 @@ app.get("/:threadId",async (req:Request,res:Response) =>{
         const {threadId} = req.params
         
         console.log("in get route")
-        const response = await fetch(`https://www.reddit.com/comments/${threadId}.json`, {
+        const response = await fetch(`https://api.reddit.com/comments/${threadId}.json`, {
   headers: {
     "User-Agent": "RedditInsight/1.0 (https://redditsummarizer.onrender.com)"
   }
