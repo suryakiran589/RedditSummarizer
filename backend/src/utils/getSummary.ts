@@ -15,7 +15,7 @@ export default async function getSummary(title:string,comments:Array<string>) {
     console.log("in get summary")
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `i am doing a project where user gives a reddit post link and for title ${title} and comments ${comments} you have to analyse them and give a honest and crisp two line summary  `,
+      contents: `i am doing a project where user gives a reddit post link and for title ${title} and comments ${comments} you have to analyse them and give a honest and crisp on first line title and from nextline a two line summary and i dont want '*'s in it  `,
     });
     return response.text
   }
