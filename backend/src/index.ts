@@ -21,6 +21,7 @@ app.get("/:threadId", async (req: Request, res: Response) => {
     const { threadId } = req.params;
 
     console.log("in get route");
+    
     const auth = await fetch("https://www.reddit.com/api/v1/access_token", {
       method: "POST",
       headers: {
@@ -30,27 +31,36 @@ app.get("/:threadId", async (req: Request, res: Response) => {
             `${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`
           ).toString("base64"),
         "Content-Type": "application/x-www-form-urlencoded",
+        "User-Agent": "redinsight/1.0.0", // Add your app name here
       },
       body: "grant_type=client_credentials",
     });
+    
     const { access_token } = await auth.json();
+    
     const response = await fetch(
-      `https://api.reddit.com/comments/${threadId}.json`,
+      `https://oauth.reddit.com/comments/${threadId}`, // Use oauth.reddit.com for authenticated requests
       {
-        headers: { Authorization: `Bearer ${access_token}` },
+        headers: { 
+          Authorization: `Bearer ${access_token}`,
+          "User-Agent": "redinsight/1.0.0", // Must match the one above
+        },
       }
     );
+    
+    if (!response.ok) {
+      throw new Error(`Reddit API error: ${response.status} ${response.statusText}`);
+    }
+    
     const data = await response.json();
-    // console.log(data[1].data.children)
     const title = data[0].data.children[0].data.title;
-    // console.log(title)
     const comments = data[1].data.children.map((obj: Obj) => obj.data.body);
-    // console.log(comments)
     const summary = await getSummary(title, comments);
+    
     res.status(200).json({ summary: summary });
   } catch (e) {
     console.log(e);
-    res.status(500);
+    res.status(500).json({ error: "Failed to fetch Reddit data" });
   }
 });
 
