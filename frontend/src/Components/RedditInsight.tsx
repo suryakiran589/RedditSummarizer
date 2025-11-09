@@ -61,7 +61,8 @@ const RedditInsight = () => {
     setDisableSubmit(true)
     setLoading(true)
     const regx =
-      /^https?:\/\/(?:www\.|old\.|m\.)?reddit\.com\/r\/([^\/]+)\/comments\/([A-Za-z0-9]+)\/([^\/\?#]+)\/?(?:[\?#].*)?$/i;
+      /^https?:\/\/(?:www\.|old\.|m\.)?reddit\.com\/r\/([^\/]+)\/(?:comments|s)\/([A-Za-z0-9]+)(?:\/([^\/\?#]+)\/?)?(?:[\?#].*)?$/i;
+
     const matchingVars = inp?.current?.value?.match(regx);
     if (!matchingVars) {
       setError(true)
